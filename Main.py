@@ -1,19 +1,9 @@
-from fastapi import FastAPI
 import requests
 from requests.auth import HTTPBasicAuth
 import json
-from fastapi.middleware.cors import CORSMiddleware
-import json
 import os
 
-app = FastAPI()
-
 data = {}
-
-@app.get("/tickets")
-def get_tickets():
-    res = getData()
-    return res.json()
 
 def getData():
     loginDetails = getDetails()
@@ -22,3 +12,12 @@ def getData():
     url = loginDetails[2]
     res = requests.get(url + "tickets", auth = HTTPBasicAuth(user,password))
     return res
+
+def getDetails():
+    file = open('login.json')
+    data = json.load(file)
+    user = data['username']
+    password = data['password']
+    hostname = data['hostname']
+    url = "https://"+hostname+".zendesk.com/api/v2/"
+    return [user,password,url]
