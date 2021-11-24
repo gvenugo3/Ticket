@@ -11,7 +11,7 @@ def getData():
 	res = requests.get(url + "tickets", auth = HTTPBasicAuth(user,password))
 
 	if(res.status_code >= 400):
-		return false
+		return False
 
 	return res.json()
 
@@ -24,7 +24,7 @@ def getTicket(ticketId):
 	res = requests.get(url + "tickets/" + str(ticketId) + ".json", auth = HTTPBasicAuth(user,password))
 	
 	if(res.status_code >= 400):
-		return false
+		return False
 
 	return res.json()
 

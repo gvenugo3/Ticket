@@ -4,9 +4,11 @@ from tabulate import tabulate
 def CLI():
 	current_page = 1
 	data = m.getData()
-	if(data == false):
+
+	if(data == False):
 		print("Error: Authentication Error")
 		return
+
 	ticket = []
 	table = []
 	print("\nTotal Tickets %d \n" % len(data['tickets']))
@@ -26,7 +28,8 @@ def CLI():
 		print("2. Previous Page")
 		print("3. Get Ticket Details")
 		print("4. Exit")
-		choice = int(input("Enter your choice: "))
+
+		choice = int(input("Enter your choice: ") or '99')
 
 		if(choice == 1):
 			current_page += 1
@@ -40,16 +43,18 @@ def CLI():
 
 		elif (choice == 3):
 			ticket_id = input("Enter the ticket id: ")
-			Print_Ticket(ticket_id)
+			flag = Print_Ticket(ticket_id)
 			back = 'n'
 			while(back == 'n'):
 				back = input("\nGo Back? (y/n)")
+				if(flag == 0 or flag == 1):
+					break
 
 
 		elif(choice == 4):
 			break
-		print(choice)
 
+# Function to print the ticket list in pages
 def Print_Table(table, page):
 	size = len(table)
 	total_pages = size // 25
@@ -60,23 +65,22 @@ def Print_Table(table, page):
 
 	print(tabulate(table[(page - 1) * 25 : page * 25], headers, tablefmt="github"))
 
+# Function to print details of ticket 'ticker_id'
 def Print_Ticket(ticket_id):
 	ticket = m.getTicket(ticket_id)
+
+	if(ticket == False):
+		print("Authentication Error")
+		return 0
+
 	ticket = ticket['ticket']
-	print(ticket['id'])
 	if('error' in ticket):
 		print('Error: Ticket not Found')
 		return 0
 	
-	table = []
-	details = []
-	details.append(ticket['id'])
-	details.append(ticket["subject"])
-	details.append(ticket["description"])
-	details.append(ticket["status"])
-	table.append(details)
-	header = ['ID',"Subject","Description","Status"]
-	print(tabulate(table, header, tablefmt="github"))
+	print("\nSubject - %s" % ticket['subject'])
+	print('\nDescription - %s' % ticket['description'])
+	print("\nStatus - %s" % ticket['status'])
 	
 
 CLI()
