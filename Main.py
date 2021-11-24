@@ -23,7 +23,7 @@ def getTicket(ticketId):
 	url = loginDetails[2]
 	res = requests.get(url + "tickets/" + str(ticketId) + ".json", auth = HTTPBasicAuth(user,password))
 	
-	if(res.status_code == 400):
+	if(res.status_code >= 400):
 		return false
 
 	return res.json()
