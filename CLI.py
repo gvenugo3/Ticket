@@ -1,13 +1,19 @@
-import Main as m
+import API as m
 from tabulate import tabulate
 
 def CLI():
 	current_page = 1
-	data = m.getData()
+	data = { }
+	try:
+		data = m.getData()
+	except :
+		print("Connection Error")
+		return "Connection Error"
 
 	if(data == False):
+		# Wrong Login Detials
 		print("Error: Authentication Error")
-		return
+		return "Authentication Error"
 
 	ticket = []
 	table = []
@@ -29,6 +35,7 @@ def CLI():
 		print("3. Get Ticket Details")
 		print("4. Exit")
 
+		# default value is 99 if no input
 		choice = int(input("Enter your choice: ") or '99')
 
 		if(choice == 1):
@@ -61,26 +68,27 @@ def Print_Table(table, page):
 	headers = ["#","Ticket ID","Subject"]
 	if(page == total_pages):
 		print(tabulate(table[(page - 1) * 25 : ], headers, tablefmt="github"))
-		return
+		return 0
 
 	print(tabulate(table[(page - 1) * 25 : page * 25], headers, tablefmt="github"))
+	return 1
 
 # Function to print details of ticket 'ticker_id'
 def Print_Ticket(ticket_id):
 	ticket = m.getTicket(ticket_id)
 
-	if(ticket == False):
+	if(ticket == 1):
 		print("Authentication Error")
+		return 0
+	
+	if(ticket == 0):
+		print('Error: Ticket not Found')
 		return 0
 
 	ticket = ticket['ticket']
-	if('error' in ticket):
-		print('Error: Ticket not Found')
-		return 0
-	
 	print("\nSubject - %s" % ticket['subject'])
 	print('\nDescription - %s' % ticket['description'])
 	print("\nStatus - %s" % ticket['status'])
-	
 
 CLI()
+	

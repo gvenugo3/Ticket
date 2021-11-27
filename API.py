@@ -23,17 +23,23 @@ def getTicket(ticketId):
 	url = loginDetails[2]
 	res = requests.get(url + "tickets/" + str(ticketId) + ".json", auth = HTTPBasicAuth(user,password))
 	
-	if(res.status_code >= 400):
-		return False
+	if(res.status_code >= 400 and 'error' in res.json()):
+		return 0
+	elif (res.status_code >= 400):
+		return 1
 
 	return res.json()
 
 # Reads login.json for user auth details
 def getDetails():
-    file = open('login.json')
-    data = json.load(file)
-    user = data['username']
-    password = data['password']
-    hostname = data['hostname']
-    url = "https://"+hostname+".zendesk.com/api/v2/"
-    return [user,password,url]
+	try:
+		file = open('login.json')
+	except:
+		print("Login Details not found. login.json file not found")
+		return -1
+	data = json.load(file)
+	user = data['username']
+	password = data['password']
+	hostname = data['hostname']
+	url = "https://"+hostname+".zendesk.com/api/v2/"
+	return [user,password,url]
